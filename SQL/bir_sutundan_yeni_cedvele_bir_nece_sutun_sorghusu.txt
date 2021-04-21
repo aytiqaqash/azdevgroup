@@ -1,0 +1,122 @@
+#Təsəvvür edin ki, sizin bir cədvəliniz (table1) var və daxilində iki sütün (id,sozler).
+#Cədvəldə 50 min yazı var. Həmin bu 50 min yazını yeni cədvələ (table2) köçürtmək lazımdır.
+#Şərt isə yeni cədvəldə 10 min yazı olacaq və 5 dənə sütün (m, m1, m2, m3, m4).
+#İkinci şərt isə SQL query ilə edilməlidir. Verilənlər bazasına sorğunu phpmyadmindən göndərirlər.
+
+
+# İlk dəfə lazım deyil bu iki dropu run eləmək.
+DROP TABLE table2;
+DROP TABLE table1;
+
+#Birinci cedvel sizde var.
+CREATE TABLE table1
+(
+    id     int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    sozler text
+);
+
+#ikinci cedveli yoxdursa yaradiriq
+CREATE TABLE table2
+(
+    id     int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    m text,
+    m1 text,
+    m2 text,
+    m3 text,
+    m4 text
+);
+
+#hisseleri bir nece cedvel arasinda paylashdirmaq üçün cədvəlləri yaradırıq
+CREATE TABLE m
+(
+    id     int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    sozler text
+);
+CREATE TABLE m1
+(
+    id     int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    sozler text
+);
+CREATE TABLE m2
+(
+    id     int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    sozler text
+);
+CREATE TABLE m3
+(
+    id     int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    sozler text
+);
+CREATE TABLE m4
+(
+    id     int NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    sozler text
+);
+
+# bu sadəcə birinci cədvəlimizə məlumat doldurmaq üçündür
+INSERT INTO table1 (sozler)
+VALUES ('ayti'),
+       ('qaqash'),
+       ('sql'),
+       ('task'),
+       ('azerbaijan'),
+       ('developers'),
+       ('group'),
+       ('diger'),
+       ('soz'),
+       ('iki'),
+       ('table'),
+       ('yaratdiq'),
+       ('birinciden'),
+       ('ikinciye'),
+       ('sozleri'),
+       ('kecirdirik'),
+       ('bes'),
+       ('eder'),
+       ('yegin'),
+       ('son');
+
+# yaratdığımız cədvəlləri lazım olan məlumatla doldururuq
+INSERT INTO m
+SELECT null, sozler
+FROM table1
+LIMIT 0,4;
+INSERT INTO m1
+SELECT null, sozler
+FROM table1
+LIMIT 4,4;
+INSERT INTO m2
+SELECT null, sozler
+FROM table1
+LIMIT 8,4;
+INSERT INTO m3
+SELECT null, sozler
+FROM table1
+LIMIT 12,4;
+INSERT INTO m4
+SELECT null, sozler
+FROM table1
+LIMIT 16,4;
+
+# özümüz üçün yaratdığımız cədvəlləri görmək istədiyimiz formada bir yerə toplayırıq
+SELECT m.sozler as m, m1.sozler as m1, m2.sozler as m2, m3.sozler as m3
+FROM m
+         LEFT JOIN m1 on m.id = m1.id
+         LEFT JOIN m2 on m.id = m2.id
+         LEFT JOIN m3 on m.id = m3.id
+         LEFT JOIN m4 on m.id = m4.id;
+
+# Məlumatları ikinci cədvələ toplayırıq
+INSERT INTO table2 (SELECT null, m.sozler as m, m1.sozler as m1, m2.sozler as m2, m3.sozler as m3, m4.sozler as m4
+FROM m
+         LEFT JOIN m1 on m.id = m1.id
+         LEFT JOIN m2 on m.id = m2.id
+         LEFT JOIN m3 on m.id = m3.id
+         LEFT JOIN m4 on m.id = m4.id);
+
+# Köməkçi cədvəlləri silirik.
+DROP TABLE m;
+DROP TABLE m1;
+DROP TABLE m2;
+DROP TABLE m3;
+DROP TABLE m4;
